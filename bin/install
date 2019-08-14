@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+install_MySQL() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+
+  MAJOR="$(echo $version | cut -d. -f1)"
+  MINOR="$(echo $version | cut -d. -f2)"
+
+  if [ "$TMPDIR" = "" ]; then
+    local tmp_download_dir=$(mktemp -d)
+  else
+    local tmp_download_dir=$TMPDIR
+  fi
+
+  case "$(uname -s)" in
+    Linux)
+      FILE="mysql-${version}-linux*$(arch)*"
+      ;;
+    Darwin)
+      FILE="mysql-${version}-osx10*"
+      ;;
+    FreeBSD)
+      FILE="mysql-${version}-freebsd*"
+      ;;
+  esac
+
+  # Very annoyingly, mysql changes compression extensions part way through
+  rsync --quiet -zarv --include="*/" --include="*.gz" --include="*.xz" \
+    --exclude="*" \
+    rsync://mysql.he.net/mysql/Downloads/MySQL-"${MAJOR}.${MINOR}"/${FILE} \
+    ${tmp_download_dir}/. 2>/dev/null
+
+  # running this in a subshell
+  # because we don't want to disturb current working dir
+  (
+    cd $tmp_download_dir
+    # MySQL randomly introduced a "-minimal" version for linux, so use
+    # the largest target
+    CFILE="$(ls -S *.{xz,gz} | head -1)"
+    tar -xaf $CFILE
+    DIR="$(ls -l | grep ^d | awk '{ print $NF }')"
+    rsync -ar "${DIR}/." "${install_path}/." 
+  )
+
+  # Cleanup
+  rm -rf $tmp_download_dir
+}
+
+install_MySQL $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH

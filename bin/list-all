@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# MySQL makes it _really_ hard to programatically discover versions
+
+raw_versions="$(rsync -arv rsync://mysql.he.net/mysql/Downloads/MySQL-\*/mysql-\[0-9\]\*.zip 2>&1 | awk '/mysql-/{ print $NF }')"
+versions="$(echo $raw_versions | tr ' ' '\n' |  sed -e 's/mysql-\([0-9.]*\).*/\1/' | sed -e 's/\.$//' | sort -u)"
+
+echo $versions

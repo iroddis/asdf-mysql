@@ -36,6 +36,7 @@ install_MySQL() {
   # because we don't want to disturb current working dir
   (
     cd $tmp_download_dir
+    ls -l
     # MySQL randomly introduced a "-minimal" version for linux, so use
     # the largest target
     CFILE="$(ls -S *.{xz,gz} | head -1)"

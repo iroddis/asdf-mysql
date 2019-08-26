@@ -1,7 +1,7 @@
 language: c
 script: asdf plugin-test mysql https://github.com/iroddis/asdf-mysql.git 'mysql --version'
 before_install:
-    - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -qq update; else brew install xz; fi
+    - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -qq update; fi
 before_script:
     - git clone https://github.com/asdf-vm/asdf.git
     - . asdf/asdf.sh

@@ -10,11 +10,7 @@ install_MySQL() {
   MAJOR="$(echo $version | cut -d. -f1)"
   MINOR="$(echo $version | cut -d. -f2)"
 
-  if [ "$TMPDIR" = "" ]; then
-    tmp_download_dir=$(mktemp -d)
-  else
-    tmp_download_dir=$TMPDIR
-  fi
+  tmp_download_dir=$(mktemp -d)
 
   case "$(uname -s)" in
     Linux)

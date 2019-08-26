@@ -28,19 +28,23 @@ install_MySQL() {
   rsync --quiet -zarv --include="*/" --include="*.gz" --include="*.xz" \
     --exclude="*" \
     rsync://mysql.he.net/mysql/Downloads/MySQL-"${MAJOR}.${MINOR}"/${FILE} \
-    ${tmp_download_dir}/. #2>/dev/null
-
-  ls -l $tmp_download_dir
+    ${tmp_download_dir}/. 2>/dev/null
 
   # running this in a subshell
   # because we don't want to disturb current working dir
   (
     cd $tmp_download_dir
-    ls -l
     # MySQL randomly introduced a "-minimal" version for linux, so use
     # the largest target
     CFILE="$(ls -S *.{xz,gz} | head -1)"
-    tar -xaf $CFILE
+    case "$( echo $CFILE | awk -F. '{ print $NF }')" in
+      gz)
+        tar -xzf $CFILE
+        ;;
+      xz)
+        tar -xJf $CFILE
+        ;;
+    esac
     DIR="$(ls -l | grep ^d | awk '{ print $NF }')"
     rsync -ar "${DIR}/." "${install_path}/." 
   )

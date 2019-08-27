@@ -6,7 +6,6 @@ install_MySQL() {
   local install_path=$3
 
   set -e
-  set -x
 
   MAJOR="$(echo $version | cut -d. -f1)"
   MINOR="$(echo $version | cut -d. -f2)"

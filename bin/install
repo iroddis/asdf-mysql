@@ -5,6 +5,7 @@ install_MySQL() {
   local version=$2
   local install_path=$3
 
+  set -x
   set -e
 
   MAJOR="$(echo $version | cut -d. -f1)"
@@ -25,9 +26,9 @@ install_MySQL() {
   esac
 
   # Very annoyingly, mysql changes compression extensions part way through
-  rsync --quiet -zarv --include="*/" --include="*.gz" --include="*.xz" \
+  rsync -zarv --include="*/" --include="*.gz" --include="*.xz" \
     --exclude="*" \
-    rsync://mysql.he.net/mysql/Downloads/MySQL-"${MAJOR}.${MINOR}"/${FILE} \
+    rsync://rsync.mirrorservice.org/ftp.mysql.com/Downloads/MySQL-"${MAJOR}.${MINOR}"/${FILE} \
     ${tmp_download_dir}/. 2>/dev/null
 
   # running this in a subshell
@@ -46,7 +47,7 @@ install_MySQL() {
         ;;
     esac
     DIR="$(ls -l | grep ^d | awk '{ print $NF }')"
-    rsync -ar "${DIR}/." "${install_path}/." 
+    rsync -ar "${DIR}/." "${install_path}/."
   )
 
   # Cleanup

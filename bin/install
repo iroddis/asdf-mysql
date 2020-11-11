@@ -18,7 +18,7 @@ install_MySQL() {
       FILE="mysql-${version}-linux*$(arch)*"
       ;;
     Darwin)
-      FILE="mysql-${version}-macos10*"
+      FILE="mysql-${version}*"
       ;;
     FreeBSD)
       FILE="mysql-${version}-freebsd*"

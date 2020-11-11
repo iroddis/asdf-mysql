@@ -47,7 +47,7 @@ install_MySQL() {
         ;;
     esac
     DIR="$(ls -l | grep ^d | awk '{ print $NF }')"
-    rsync -ar "${DIR}/." "${install_path}/."
+    rsync -ar "${DIR:-$PWD}/." "${install_path}/."
   )
 
   # Cleanup

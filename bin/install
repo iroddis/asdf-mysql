@@ -45,9 +45,12 @@ install_MySQL() {
       xz)
         tar -xJf $CFILE
         ;;
+      zip)
+        tar -xzvf $CFILE
+        ;;
     esac
     DIR="$(ls -l | grep ^d | awk '{ print $NF }')"
-    rsync -ar "${DIR:-$PWD}/." "${install_path}/."
+    rsync -ar "${DIR}/." "${install_path}/."
   )
 
   # Cleanup

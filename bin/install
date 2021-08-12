@@ -9,6 +9,7 @@ install_MySQL() {
 
   MAJOR="$(echo $version | cut -d. -f1)"
   MINOR="$(echo $version | cut -d. -f2)"
+  PATCH="$(echo $version | cut -d. -f3)"
 
   tmp_download_dir=$(mktemp -d)
 
@@ -17,11 +18,24 @@ install_MySQL() {
       FILE="mysql-${version}-linux*$(arch)*"
       ;;
     Darwin)
-      if (( MAJOR < 8 )); then
+      if (( ${MAJOR} < 8 )); then
         # the mirrorservice listings for mysql-8.0 have updated to list macos11 as the OS association
         FILE="mysql-${version}-macos10*"
       else
-        FILE="mysql-${version}-macos11*"
+          case "$(arch)" in
+            i386)
+              ARCH="x86_64"
+              ;;
+            *)
+              ARCH="arm64"
+              if (( ${MAJOR} < 8 )) || (( (( ${MAJOR} == 8 )) && (( ${PATCH} <= 25 )) )); then
+                echo "Error: pre-built binaries are not available for ARM prior to 8.0.26"
+                exit 1
+              fi
+              ;;
+          esac
+        fi
+        FILE="mysql-${version}-macos11-${ARCH}*"
       fi
       ;;
     FreeBSD)

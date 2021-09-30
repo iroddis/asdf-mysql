@@ -15,14 +15,14 @@ install_MySQL() {
 
   case "$(uname -s)" in
     Linux)
-      FILE="mysql-${version}-linux*$(arch)*"
+      FILE="mysql-${version}-linux*$(uname -m)*"
       ;;
     Darwin)
       if (( ${MAJOR} < 8 )); then
         # the mirrorservice listings for mysql-8.0 have updated to list macos11 as the OS association
         FILE="mysql-${version}-macos10*"
       else
-        case "$(arch)" in
+        case "$(uname -m)" in
           i386)
             ARCH="x86_64"
             ;;

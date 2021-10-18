@@ -23,7 +23,7 @@ install_MySQL() {
         FILE="mysql-${version}-macos10*"
       else
         case "$(uname -m)" in
-          i386)
+          i386|x86_64)
             ARCH="x86_64"
             ;;
           *)

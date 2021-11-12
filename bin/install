@@ -18,7 +18,10 @@ install_MySQL() {
       FILE="mysql-${version}-linux*$(uname -m)*"
       ;;
     Darwin)
-      if (( ${MAJOR} < 8 )); then
+      if (( ${MAJOR} < 5 )); then
+          echo "Error: Mysql v4.x and earlier are not supported on OS X"
+          exit 1
+      elif (( ${MAJOR} < 8 )); then
         # the mirrorservice listings for mysql-8.0 have updated to list macos11 as the OS association
         FILE="mysql-${version}.*"
       else
@@ -73,7 +76,19 @@ install_MySQL() {
         ;;
     esac
     DIR="$(ls -l | grep ^d | awk '{ print $NF }')"
-    rsync -ar "${DIR}/." "${install_path}/."
+
+    # There's a choice here, if the file was source only or binary
+    if [[ -f "${DIR}/CMakeLists.txt" ]]; then
+        cd "${DIR}/build"
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${install_path}" ..
+        make -j 4 install
+    elif [[ -f "${DIR}/configure" ]]; then
+        cd "${DIR}"
+        ./configure --prefix="${install_path}"
+        make -j 4 install
+    else
+        rsync -ar "${DIR}/." "${install_path}/."
+    fi
   )
 
   # Cleanup
@@ -94,5 +109,10 @@ install_MySQL() {
       ;;
   esac
 }
+
+if [[ -z "$ASDF_INSTALL_TYPE" ]]; then
+  echo "This command should not be run directly, only via asdf"
+  exit 1
+fi
 
 install_MySQL $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH

@@ -16,6 +16,8 @@ help, but for some reason, it's an unknown argument.
 * Mac
     1. [Homebrew](https://brew.sh): used to install the remainder of the dependencies
     1. ```brew install gcc xz```
+    1. **For version 6.0 and older**
+      * ```cmake``` and XCode
 * Linux
     1. libtinfo5
     1. libaio1

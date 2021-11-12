@@ -43,7 +43,7 @@ install_MySQL() {
   esac
 
   # Very annoyingly, mysql changes compression extensions part way through
-  rsync -zarv --include="*/" --include="*.gz" --include="*.xz" \
+  rsync -zarv --include="*/" --include="*.gz" --include="*.xz" --include="*.zip" \
     --exclude="*" \
     rsync://rsync.mirrorservice.org/ftp.mysql.com/Downloads/MySQL-"${MAJOR}.${MINOR}"/${FILE} \
     ${tmp_download_dir}/. 2>/dev/null
@@ -54,13 +54,16 @@ install_MySQL() {
     cd $tmp_download_dir
     # MySQL randomly introduced a "-minimal" version for linux, so use
     # the largest target
-    CFILE="$(ls -S *.{xz,gz} | head -1)"
+    CFILE="$(ls -S *.{xz,gz,zip} 2>/dev/null | head -1)"
     case "$( echo $CFILE | awk -F. '{ print $NF }')" in
       gz)
         tar -xzf $CFILE
         ;;
       xz)
         tar -xJf $CFILE
+        ;;
+      zip)
+        unzip -q $CFILE
         ;;
     esac
     DIR="$(ls -l | grep ^d | awk '{ print $NF }')"

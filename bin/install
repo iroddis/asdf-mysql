@@ -20,7 +20,7 @@ install_MySQL() {
     Darwin)
       if (( ${MAJOR} < 8 )); then
         # the mirrorservice listings for mysql-8.0 have updated to list macos11 as the OS association
-        FILE="mysql-${version}-macos10*"
+        FILE="mysql-${version}.*"
       else
         case "$(uname -m)" in
           i386|x86_64)
@@ -42,10 +42,16 @@ install_MySQL() {
       ;;
   esac
 
-  # Very annoyingly, mysql changes compression extensions part way through
-  rsync -zarv --include="*/" --include="*.gz" --include="*.xz" --include="*.zip" \
+  # it's possible that a file is compressed under multiple schemes.
+  # Choose the first one
+  DFILE="$(rsync -zarv --include="*/" --include="*.gz" --include="*.xz" --include="*.zip" \
     --exclude="*" \
     rsync://rsync.mirrorservice.org/ftp.mysql.com/Downloads/MySQL-"${MAJOR}.${MINOR}"/${FILE} \
+    | awk '/mysql-/{ print $NF}' \
+    | head -1)"
+
+  # Very annoyingly, mysql changes compression extensions part way through
+  rsync -zarv rsync://rsync.mirrorservice.org/ftp.mysql.com/Downloads/MySQL-"${MAJOR}.${MINOR}"/${DFILE} \
     ${tmp_download_dir}/. 2>/dev/null
 
   # running this in a subshell

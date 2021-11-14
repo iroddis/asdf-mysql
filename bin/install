@@ -100,7 +100,7 @@ install_MySQL() {
   case "$MAJOR" in
     8)
       echo "To initialize a new database:"
-      echo "  asdf global ${version}"
+      echo "  asdf global mysql ${version}"
       echo "  export DATADIR=/path/to/data"
       echo "  mysqld --initialize-insecure --datadir=$DATADIR"
       echo "  mysql_ssl_rsa_setup --datadir=$DATADIR"

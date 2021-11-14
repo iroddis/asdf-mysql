@@ -106,6 +106,8 @@ install_MySQL() {
       echo "  mysql_ssl_rsa_setup --datadir=$DATADIR"
       echo "To run the server:"
       echo "  mysqld_safe --datadir=$DATADIR"
+      echo "To stop the server:"
+      echo "  mysqladmin -u root shutdown"
       ;;
   esac
 }

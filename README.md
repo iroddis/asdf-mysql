@@ -21,6 +21,7 @@ help, but for some reason, it's an unknown argument.
 * Linux
     1. libtinfo5
     1. libaio1
+    2. rsync
 
 ## Install
 

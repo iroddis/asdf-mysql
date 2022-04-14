@@ -13,15 +13,18 @@ help, but for some reason, it's an unknown argument.
 
 ## Dependencies
 
-* Mac
+### Mac
     1. [Homebrew](https://brew.sh): used to install the remainder of the dependencies
     1. ```brew install gcc xz```
     1. **For version 6.0 and older**
       * ```cmake``` and XCode
-* Linux
-    1. libtinfo5
-    1. libaio1
-    2. rsync
+
+### Linux
+
+| **Distribution** | **Packages** |
+| Debian derivatives | `rsync libaio1 libtinfo5 numactl` |
+| Arch derivatives | `rsync libaio ncurses5-compat-libs numactl` |
+| Fedora/RHEL | `rsync libaio1 ncurses-compat-libs numactl` |
 
 ## Install
 

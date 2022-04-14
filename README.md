@@ -22,6 +22,7 @@ help, but for some reason, it's an unknown argument.
 ### Linux
 
 | **Distribution** | **Packages** |
+|---|---|
 | Debian derivatives | `rsync libaio1 libtinfo5 numactl` |
 | Arch derivatives | `rsync libaio ncurses5-compat-libs numactl` |
 | Fedora/RHEL | `rsync libaio1 ncurses-compat-libs numactl` |

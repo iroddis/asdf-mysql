@@ -37,7 +37,12 @@ install_MySQL() {
             fi
             ;;
         esac
-        FILE="mysql-${version}-macos11-${ARCH}*"
+
+        MACOSVER="11"
+        if (( ${MAJOR} >= 8 )) && (( ${PATCH} >= 29 )); then
+          MACOSVER="12"
+        fi
+        FILE="mysql-${version}-macos${MACOSVER}-${ARCH}*"
       fi
       ;;
     FreeBSD)
@@ -47,15 +52,11 @@ install_MySQL() {
 
   # it's possible that a file is compressed under multiple schemes.
   # Choose the first one
-  DFILE="$(rsync -zarv --include="*/" --include="*.gz" --include="*.xz" --include="*.zip" \
-    --exclude="*" \
-    rsync://rsync.mirrorservice.org/ftp.mysql.com/Downloads/MySQL-"${MAJOR}.${MINOR}"/${FILE} \
-    | awk '/mysql-/{ print $NF}' \
-    | head -1)"
-
-  # Very annoyingly, mysql changes compression extensions part way through
-  rsync -zarv rsync://rsync.mirrorservice.org/ftp.mysql.com/Downloads/MySQL-"${MAJOR}.${MINOR}"/${DFILE} \
-    ${tmp_download_dir}/. 2>/dev/null
+  PATTERN="$(echo $FILE | sed -e 's/\*/.*./g')\.(zip|gz|xz)<\/a>"
+  echo "$PATTERN"
+  VERSION_URL="https://mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-${MAJOR}.${MINOR}/"
+  BINARY="$(curl -s "${VERSION_URL}/" | grep -iE $PATTERN | awk -F\" '{ print $6 }' | head -1)"
+  curl -so "${tmp_download_dir}/${BINARY}" "${VERSION_URL}/${BINARY}"
 
   # running this in a subshell
   # because we don't want to disturb current working dir
@@ -87,7 +88,7 @@ install_MySQL() {
         ./configure --prefix="${install_path}"
         make -j 4 install
     else
-        rsync -ar "${DIR}/." "${install_path}/."
+        mv "${DIR}" "${install_path}"
     fi
   )
 

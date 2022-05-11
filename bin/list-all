@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 # MySQL makes it _really_ hard to programatically discover versions
+BASE_URL="https://mirrorservice.org/sites/ftp.mysql.com/Downloads/"
+VERSIONS=""
+for SUBDIR in $(curl -s "$BASE_URL" | awk -F\" '/href="MySQL-[0-9]/{ print $6 }'); do
+  SUBVERS="$(curl -s "${BASE_URL}/${SUBDIR}/" | awk -F\" '/mysql-[0-9].*\.zip"/{ print $6 }')"
+  VERSIONS="${VERSIONS} ${SUBVERS}"
+done
 
-#raw_versions="$(curl -s https://api.github.com/repos/mysql/mysql-server/git/refs/tags | grep -E '"url":.*/tags/' | awk -F/ '{ print $NF }' | sed -e 's/".*//g' )"
-
-#raw_versions="$(rsync -arv rsync://mysql.he.net/mysql/Downloads/MySQL-\*/mysql-\[0-9\]\*.zip 2>&1 | awk '/mysql-/{ print $NF }')"
-raw_versions="$(rsync -arv rsync://rsync.mirrorservice.org/ftp.mysql.com/Downloads/MySQL-\*/mysql-\[0-9\]\*.zip 2>&1 | awk '/mysql-/{ print $NF }')"
-versions="$(echo $raw_versions | tr ' ' '\n' |  sed -e 's/mysql-\([0-9.]*\).*/\1/' | sed -e 's/\.$//' | sort -u)"
-
-echo $versions | tr '\n' ' '
+STRIPPED_VERSIONS="$(echo $VERSIONS | tr ' ' '\n' |  sed -e 's/mysql-\([0-9.]*\).*/\1/' | sed -e 's/\.$//' | sort -u | tr '\n' ' ')"
+echo "$STRIPPED_VERSIONS"

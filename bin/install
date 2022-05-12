@@ -53,7 +53,6 @@ install_MySQL() {
   # it's possible that a file is compressed under multiple schemes.
   # Choose the first one
   PATTERN="$(echo $FILE | sed -e 's/\*/.*./g')\.(zip|gz|xz)<\/a>"
-  echo "$PATTERN"
   VERSION_URL="https://mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-${MAJOR}.${MINOR}/"
   BINARY="$(curl -s "${VERSION_URL}/" | grep -iE $PATTERN | awk -F\" '{ print $6 }' | head -1)"
   curl -so "${tmp_download_dir}/${BINARY}" "${VERSION_URL}/${BINARY}"
@@ -88,7 +87,8 @@ install_MySQL() {
         ./configure --prefix="${install_path}"
         make -j 4 install
     else
-        mv "${DIR}" "${install_path}"
+      [[ -d "${install_path}" ]] && rm -rf "${install_path}"
+      mv "${DIR}" "${install_path}"
     fi
   )
 

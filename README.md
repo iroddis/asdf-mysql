@@ -23,7 +23,7 @@ help, but for some reason, it's an unknown argument.
 
 | **Distribution** | **Packages** |
 |---|---|
-| Debian derivatives | `curl libaio1 libtinfo5 numactl` |
+| Debian derivatives | `curl libaio1 libtinfo5 libncurses5 numactl` |
 | Arch derivatives | `curl libaio ncurses5-compat-libs numactl` |
 | Fedora/RHEL | `curl libaio1 ncurses-compat-libs numactl` |
 

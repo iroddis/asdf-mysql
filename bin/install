@@ -35,8 +35,8 @@ install_MySQL() {
           echo "Error: Mysql v4.x and earlier are not supported on OS X"
           exit 1
       elif (( ${MAJOR} < 8 )); then
-        # the mirrorservice listings for mysql-8.0 have updated to list macos11 as the OS association
-        FILE="mysql-${version}.*"
+        echo "Error: There are no pre-compiled binaries available for MySQL versions earlier than 8.0.27"
+        exit 1
       else
         MACOSVER="11"
         if (( ${MAJOR} >= 8 )) && (( ${PATCH} >= 29 )); then

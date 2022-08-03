@@ -12,6 +12,9 @@ install_MySQL() {
   PATCH="$(echo $version | cut -d. -f3)"
 
   tmp_download_dir=$(mktemp -d)
+  EXTRA_CMAKE_FLAGS=""
+
+  set -x
 
   case "$(uname -s)" in
     Linux)
@@ -24,10 +27,10 @@ install_MySQL() {
           ;;
         *)
           ARCH="arm64"
-          if (( ${MAJOR} < 8 )) || (( (( ${MAJOR} == 8 )) && (( ${PATCH} <= 25 )) )); then
-            echo "Error: pre-built binaries are not available for ARM prior to 8.0.26"
-            exit 1
-          fi
+         #  if (( ${MAJOR} < 8 )) || (( (( ${MAJOR} == 8 )) && (( ${PATCH} <= 25 )) )); then
+         #    echo "Error: pre-built binaries are not available for ARM prior to 8.0.26"
+         #    exit 1
+         #  fi
           ;;
       esac
 
@@ -35,8 +38,10 @@ install_MySQL() {
           echo "Error: Mysql v4.x and earlier are not supported on OS X"
           exit 1
       elif (( ${MAJOR} < 8 )); then
-        echo "Error: There are no pre-compiled binaries available for MySQL versions earlier than 8.0.27"
-        exit 1
+        # the mirrorservice listings for mysql-8.0 have updated to list macos11 as the OS association
+        FILE="mysql-${version}.zip"
+        OPENSSL_PATH="$(brew info openssl@1.1 | grep Cellar | tail -1 | cut -d' ' -f1)"
+        EXTRA_CMAKE_FLAGS="${EXTRA_CMAKE_FLAGS} -DDOWNLOAD_BOOST=1 -DWITH_BOOST=../boost -DWITH_SSL=${OPENSSL_PATH}"
       else
         MACOSVER="11"
         if (( ${MAJOR} >= 8 )) && (( ${PATCH} >= 29 )); then
@@ -52,7 +57,11 @@ install_MySQL() {
 
   # it's possible that a file is compressed under multiple schemes.
   # Choose the first one
-  PATTERN="$(echo $FILE | sed -e 's/\*/.*./g')\.(zip|gz|xz)<\/a>"
+  if [[ "$FILE" == "*\**" ]]; then
+    PATTERN="$(echo $FILE | sed -e 's/\*/.*./g')\.(zip|gz|xz)<\/a>"
+  else
+    PATTERN="${FILE}"
+  fi
   VERSION_URL="https://mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-${MAJOR}.${MINOR}/"
   BINARY="$(curl -s "${VERSION_URL}/" | grep -iE $PATTERN | awk -F\" '{ print $6 }' | head -1)"
   curl -so "${tmp_download_dir}/${BINARY}" "${VERSION_URL}/${BINARY}"
@@ -79,8 +88,13 @@ install_MySQL() {
 
     # There's a choice here, if the file was source only or binary
     if [[ -f "${DIR}/CMakeLists.txt" ]]; then
+        cd "${DIR}"
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${install_path}" $EXTRA_CMAKE_FLAGS
         cd "${DIR}/build"
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${install_path}" ..
+        #
+        # TODO : Add steps on to support building from source on OSX
+        # Relevant bug: https://bugs.mysql.com/bug.php?id=104126
+        # 
         make -j 4 install
     elif [[ -f "${DIR}/configure" ]]; then
         cd "${DIR}"

@@ -7,7 +7,7 @@
 Until recently, `asdf-mysql` relied on the excellent service provided by [MirrorService](https://mirrorservice.org) of
 the University of Kent Computing.
 
-In August of 2019, Oracle removed its `rsync` service for MySQL, though, making the
+In August of 2022, Oracle removed its `rsync` service for MySQL, though, making the
 community edition of the server that much harder to retrieve programatically.
 
 As a result, `asdf-mysql` has moved to using data sources provided by

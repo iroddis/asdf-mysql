@@ -2,24 +2,38 @@
 
 [MySQL](https://www.mysql.com/) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager.
 
-## WARNING
+# Thanks
+
+Until recently, `asdf-mysql` relied on the excellent service provided by [MirrorService](https://mirrorservice.org) of
+the University of Kent Computing.
+
+In August of 2019, Oracle removed its `rsync` service for MySQL, though, making the
+community edition of the server that much harder to retrieve programatically.
+
+As a result, `asdf-mysql` has moved to using data sources provided by
+the [dbdeployer](https://github.com/datacharmer/dbdeployer) project, which
+has what seems like a hand-maintained database of mysql versions and URLs.
+
+Thank you to both projects for making `asdf-mysql` possible.
+
+# WARNING
 
 If you already have a system installation of MySQL or MariaDB, then
 you will run into issues. MySQL makes some hardcoded assumptions about config
 file locations, and will not play well with a system install.
 
-There is a ```--no-defaults``` flag for commands listed in the command
+There is a `--no-defaults` flag for commands listed in the command
 help, but for some reason, it's an unknown argument.
 
-## Dependencies
+# Dependencies
 
-### Mac
+## Mac
     1. [Homebrew](https://brew.sh): used to install the remainder of the dependencies
-    1. ```brew install gcc xz```
+    1. `brew install gcc xz`
     1. **For version 6.0 and older**
-      * ```cmake``` and XCode
+      * `cmake` and XCode
 
-### Linux
+## Linux
 
 | **Distribution** | **Packages** |
 |---|---|
@@ -27,34 +41,34 @@ help, but for some reason, it's an unknown argument.
 | Arch derivatives | `curl libaio ncurses5-compat-libs numactl` |
 | Fedora/RHEL | `curl libaio1 ncurses-compat-libs numactl` |
 
-## Install
+# Install
 
-```
+`
 asdf plugin-add mysql
 asdf list-all mysql
 asdf install mysql [VERSION]
 asdf global mysql [VERSION]
-```
+`
 
-## Setup
+# Setup
 
 To set up the initial database in directory DATADIR. It's important
 that DATADIR is an absolute path
 
 * For 5.x
-  1. ```mysql_install_db --datadir=DATADIR```
-  1. ```mysql_secure_installation```
+  1. `mysql_install_db --datadir=DATADIR`
+  1. `mysql_secure_installation`
 * For 8.x+
-  1. ```mysqld --initialize-insecure --datadir=DATADIR```
-  1. ```mysql_ssl_rsa_setup --datadir=DATADIR```
+  1. `mysqld --initialize-insecure --datadir=DATADIR`
+  1. `mysql_ssl_rsa_setup --datadir=DATADIR`
 
 
-## Running
+# Running
 
-To run the server: ```mysqld -D --datadir=DATADIR```
-* For 8.x+: ```mysqld_safe --datadir=DATADIR```
+To run the server: `mysqld -D --datadir=DATADIR`
+* For 8.x+: `mysqld_safe --datadir=DATADIR`
   
 
-## ASDF options
+# ASDF options
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for instructions on how to install & manage versions of MySQL.

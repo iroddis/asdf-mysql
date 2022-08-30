@@ -21,6 +21,18 @@ install_MySQL() {
     | awk -F\" '/"url"/{ print $4 }'
   )"
 
+  # It's possible that multiple URLs will be returned, generally when
+  # there are multiple architectures available for a given OS / MySQL version.
+  # Try to match the native architecture, otherwise fall back to the first one
+  if [[ "$(echo $URL | wc -w)" -ne 1 ]]; then
+    # Try to choose the arch-specific version
+    ARCH_URL="$(echo $URL | tr ' ' '\n' | grep $(uname -m))"
+    if [[ -z "$ARCH_URL" ]]; then
+      ARCH_URL="$(echo $URL | cut -d' ' -f1)"
+    fi
+    URL="${ARCH_URL}"
+  fi
+
   if [[ -z "$URL" ]]; then
     echo "No URL found for ${MYSQL_VERSION}. Did you choose one from list-all?"
     return 1
@@ -68,21 +80,24 @@ install_MySQL() {
   rm -rf $tmp_download_dir
 
   # Help
-  echo Successfully installed MySQL $version
-  # TODO: Add more helpful stuff on configuring, etc
+  echo "Successfully installed MySQL ${MYSQL_VERSION}"
+  echo "To initialize a new database:"
+  echo "  asdf global mysql ${MYSQL_VERSION}"
+  echo "  export DATADIR=/path/to/data"
   case "$MAJOR" in
+    5)
+      echo "  mysql_install_db --datadir=\$DATADIR"
+      echo "  mysql_secure_installation"
+      ;;
     8)
-      echo "To initialize a new database:"
-      echo "  asdf global mysql ${version}"
-      echo "  export DATADIR=/path/to/data"
       echo "  mysqld --initialize-insecure --datadir=\$DATADIR"
       echo "  mysql_ssl_rsa_setup --datadir=\$DATADIR"
-      echo "To run the server:"
-      echo "  mysqld_safe --datadir=\$DATADIR"
-      echo "To stop the server:"
-      echo "  mysqladmin -u root shutdown"
       ;;
   esac
+  echo "To run the server:"
+  echo "  mysqld_safe --datadir=\$DATADIR"
+  echo "To stop the server:"
+  echo "  mysqladmin -u root shutdown"
 }
 
 if [[ -z "$ASDF_INSTALL_TYPE" ]]; then

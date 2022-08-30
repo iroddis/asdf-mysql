@@ -10,6 +10,13 @@ get_mysql_records() {
       ;;
   esac
 
+  # Darwin can run x86 and arm versions, do don't be specific about it.
+  # If there is a native version, it will be selected properly during the
+  # install phase
+  if [[ "${OS}" == "Darwin" ]]; then
+    ARCH="[^\"]*"
+  fi
+
   curl -s https://raw.githubusercontent.com/datacharmer/dbdeployer/master/downloads/tarball_list.json |
   tr '\n' ' ' |
   tr '{}' '\n\n' |

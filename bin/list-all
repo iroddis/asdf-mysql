@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
-# MySQL makes it _really_ hard to programatically discover versions
-BASE_URL="https://mirrorservice.org/sites/ftp.mysql.com/Downloads/"
-VERSIONS=""
-for SUBDIR in $(curl -s "$BASE_URL" | awk -F\" '/href="MySQL-[0-9]/{ print $6 }'); do
-  SUBVERS="$(curl -s "${BASE_URL}/${SUBDIR}/" | awk -F\" '/mysql-[0-9].*\.zip"/{ print $6 }')"
-  VERSIONS="${VERSIONS} ${SUBVERS}"
-done
+set -x
 
-STRIPPED_VERSIONS="$(echo $VERSIONS | tr ' ' '\n' |  sed -e 's/mysql-\([0-9.]*\).*/\1/' | sed -e 's/\.$//' | sort -u | tr '\n' ' ')"
-echo "$STRIPPED_VERSIONS"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+. ${SCRIPT_DIR}/common.sh
+
+get_mysql_records | tr , '\n' | awk -F\" '/"version"/{ print $4 }' | sort | tr '\n' ' '

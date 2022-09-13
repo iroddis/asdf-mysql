@@ -43,12 +43,12 @@ help, but for some reason, it's an unknown argument.
 
 # Install
 
-`
+```
 asdf plugin-add mysql
 asdf list-all mysql
 asdf install mysql [VERSION]
 asdf global mysql [VERSION]
-`
+```
 
 # Setup
 

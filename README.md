@@ -65,9 +65,8 @@ that DATADIR is an absolute path
 
 # Running
 
-To run the server: `mysqld -D --datadir=DATADIR`
-* For 8.x+: `mysqld_safe --datadir=DATADIR`
-  
+To run the server: `mysqld -D --datadir=DATADIR --lc-messages-dir="$(dirname $(asdf which mysqld))/../share"`
+* For 8.x+: `mysqld_safe --lc-messages-dir="$(dirname $(asdf which mysqld))/../share" --datadir=DATADIR`
 
 # ASDF options
 

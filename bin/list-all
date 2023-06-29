@@ -6,4 +6,4 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 . ${SCRIPT_DIR}/common.sh
 
-get_mysql_records | tr , '\n' | awk -F\" '/"version"/{ print $4 }' | sort | tr '\n' ' '
+get_mysql_records | tr , '\n' | egrep -e '"(version|minimal)"' | awk -F\" '/"minimal"/{ if ($3 ~ /false/) { tag = "full" } else { tag = "minimal" } } /"version"/{ print $4 "-" tag }' | sort | tr '\n' ' '

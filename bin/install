@@ -11,12 +11,20 @@ install_MySQL() {
 
   set -e
 
+  local TAG="$(echo $MYSQL_VERSION | cut -d- -f2)"
+  MYSQL_VERSION="$(echo $MYSQL_VERSION | cut -d- -f1)"
   local MAJOR="$(echo $MYSQL_VERSION | cut -d. -f1)"
 
   tmp_download_dir=$(mktemp -d)
 
+  local MINIMAL="true"
+  if [[ "$TAG" == "full" ]]; then
+    MINIMAL="false"
+  fi
+
   URL="$(get_mysql_records \
     | grep -e "\"version\": *\"$MYSQL_VERSION\"" \
+    | grep -e "\"minimal\": *$MINIMAL" \
     | tr , '\n' \
     | awk -F\" '/"url"/{ print $4 }'
   )"

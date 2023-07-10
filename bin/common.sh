@@ -22,6 +22,6 @@ get_mysql_records() {
   tr '{}' '\n\n' |
   grep -e "\"OS\": *\"$OS\"" |
   grep -e "\"arch\": *\"$ARCH\"" |
-  grep -e '"flavor": *"mysql"'
-  #grep -e '"minimal": *false'
+  grep -e '"flavor": *"mysql"' |
+  grep -e '"minimal": *false'
 }

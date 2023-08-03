@@ -83,19 +83,19 @@ install_MySQL() {
   echo "Successfully installed MySQL ${MYSQL_VERSION}"
   echo "To initialize a new database:"
   echo "  asdf global mysql ${MYSQL_VERSION}"
-  echo "  export DATADIR=/path/to/data"
+  #echo "  export DATADIR=/path/to/data"
   case "$MAJOR" in
     5)
-      echo "  mysql_install_db --datadir=\$DATADIR"
+      echo "  mysql_install_db" # --datadir=\$DATADIR"
       echo "  mysql_secure_installation"
       ;;
     8)
-      echo "  mysqld --initialize-insecure --datadir=\$DATADIR"
-      echo "  mysql_ssl_rsa_setup --datadir=\$DATADIR"
+      echo "  mysqld --initialize" #-insecure --datadir=\$DATADIR"
+      echo "  mysql_ssl_rsa_setup" # --datadir=\$DATADIR"
       ;;
   esac
   echo "To run the server:"
-  echo "  mysqld_safe --datadir=\$DATADIR"
+  echo "  mysqld_safe" # --datadir=\$DATADIR"
   echo "To stop the server:"
   echo "  mysqladmin -u root shutdown"
 }

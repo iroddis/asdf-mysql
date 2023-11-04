@@ -2,6 +2,22 @@
 
 [MySQL](https://www.mysql.com/) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager.
 
+# Deprecation
+
+> [!WARNING]  
+> asdf-mysql is looking for a maintainer. 8.0.33 is the last supported MySQL version.
+
+As below, `asdf-mysql` has relied on an upstream project [dbdeployer](https://github.com/datacharmer/dbdeployer)
+as a reliable source of MySQL versions and binary locations. That project is no longer maintained, and is
+[looking for a maintainer](https://datacharmer.github.io/end-of-dbdeployer/).
+
+I no longer use this plugin actively, and don't have it in me with Oracle's ongoing obfuscation of MySQL sources,
+binary locations, etc. Long story short, it's not worth the hassle, and I'd recommend looking at alternatives.
+
+If anyone would like to take over this project as a maintainer, please open an issue.
+
+MySQL 8.0.33 is the last supported version.
+
 # Thanks
 
 Until recently, `asdf-mysql` relied on the excellent service provided by [MirrorService](https://mirrorservice.org) of

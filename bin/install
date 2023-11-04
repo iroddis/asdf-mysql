@@ -110,3 +110,4 @@ if [[ -z "$ASDF_INSTALL_TYPE" ]]; then
 fi
 
 install_MySQL $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+echo "!!WARNING!!: This module is no longer actively maintained. If you are interested in becoming a maintainer, please open an issue on github."
